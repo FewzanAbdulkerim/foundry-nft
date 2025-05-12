@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import {Test} from "forge-std/Test.sol";
 import {DeployBasicNft} from "../script/DeployBasicNft.s.sol";
-import {BasicNft} from "../src/BasicNft.sol";
+import {BasicNft} from "../../src/BasicNft.sol";
 
 contract BasicNftTest is Test {
     DeployBasicNft public deployer;
@@ -14,6 +14,7 @@ contract BasicNftTest is Test {
         deployer = new DeployBasicNft();
         basicNft = deployer.run();  
     }
+
 
     function testNameIsCorrect() public {
         string memory expectedName = "Dogie";
