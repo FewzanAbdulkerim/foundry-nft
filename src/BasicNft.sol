@@ -1,9 +1,9 @@
 //spdx_license_identifier: MIT
 pragma solidity ^0.8.0;
+
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 contract BasicNft is ERC721 {
-
     uint256 private s_tokenCounter;
     mapping(uint256 => string) private s_tokenURIs;
 
@@ -22,5 +22,5 @@ contract BasicNft is ERC721 {
             revert("URI query for nonexistent token");
         }
         return s_tokenURIs[tokenId];
-    } 
+    }
 }

@@ -6,13 +6,12 @@ import "@openzeppelin/contracts/utils/Base64.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 contract MoodNft is ERC721 {
-
     // Error messages
     error MoodNft__CannotFlipMoodIfNotOwner();
 
     uint256 private s_tokenCounter;
     string private s_sadSvg;
-    string private s_happySvg;  
+    string private s_happySvg;
 
     enum Mood {
         SAD,
@@ -34,7 +33,7 @@ contract MoodNft is ERC721 {
     }
 
     function flipMood(uint256 tokenId) public {
-        if (getApproved(tokenId) != msg.sender && ownerOf(tokenId) != msg.sender){
+        if (getApproved(tokenId) != msg.sender && ownerOf(tokenId) != msg.sender) {
             revert MoodNft__CannotFlipMoodIfNotOwner();
         }
         if (s_tokenIdToMood[tokenId] == Mood.HAPPY) {
@@ -44,33 +43,29 @@ contract MoodNft is ERC721 {
         }
     }
 
-
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
-        
-        string memory imageURI;
-        if (s_tokenIdToMood[tokenId] == Mood.HAPPY) {
-            imageURI = s_happySvg;
-        } else {
-            imageURI = s_sadSvg;
-        }
+        require(_ownerOf(tokenId) != address(0), "ERC721: URI query for nonexistent token");
+
+        string memory imageURI = s_tokenIdToMood[tokenId] == Mood.HAPPY ? s_happySvg : s_sadSvg;
+        string memory mood = s_tokenIdToMood[tokenId] == Mood.HAPPY ? "happy" : "sad";
 
         string memory json = Base64.encode(
             bytes(
                 string(
                     abi.encodePacked(
-                        '{"name": "Mood NFT", ',
-                        '"description": "An NFT that reflects the owner\'s mood", ',
-                        '"image": "data:image/svg+xml;base64,',
-                        Base64.encode(bytes(imageURI)),
-                        '", ',
+                        '{"name": "Mood NFT",',
+                        '"description": "An NFT that reflects the mood of the owner, 100% on Chain!",',
                         '"attributes": [{"trait_type": "mood", "value": "',
-                        s_tokenIdToMood[tokenId] == Mood.HAPPY ? "happy" : "sad",
-                        '"}]}'
+                        mood,
+                        '"}],',
+                        '"image": "',
+                        imageURI,
+                        '"}'
                     )
                 )
             )
         );
-        
+
         return string(abi.encodePacked("data:application/json;base64,", json));
     }
 }
